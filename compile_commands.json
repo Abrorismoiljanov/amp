@@ -1,0 +1,20 @@
+[
+{
+  "directory": "/home/abror/C++_codes/musicplayer/build",
+  "command": "/usr/bin/c++  -I/home/abror/C++_codes/musicplayer/include -isystem /usr/include/SDL2 -isystem /usr/include/taglib -std=gnu++17 -o CMakeFiles/amp.dir/src/filepath.cpp.o -c /home/abror/C++_codes/musicplayer/src/filepath.cpp",
+  "file": "/home/abror/C++_codes/musicplayer/src/filepath.cpp",
+  "output": "CMakeFiles/amp.dir/src/filepath.cpp.o"
+},
+{
+  "directory": "/home/abror/C++_codes/musicplayer/build",
+  "command": "/usr/bin/c++  -I/home/abror/C++_codes/musicplayer/include -isystem /usr/include/SDL2 -isystem /usr/include/taglib -std=gnu++17 -o CMakeFiles/amp.dir/src/main.cpp.o -c /home/abror/C++_codes/musicplayer/src/main.cpp",
+  "file": "/home/abror/C++_codes/musicplayer/src/main.cpp",
+  "output": "CMakeFiles/amp.dir/src/main.cpp.o"
+},
+{
+  "directory": "/home/abror/C++_codes/musicplayer/build",
+  "command": "/usr/bin/c++  -I/home/abror/C++_codes/musicplayer/include -isystem /usr/include/SDL2 -isystem /usr/include/taglib -std=gnu++17 -o CMakeFiles/amp.dir/src/playlist.cpp.o -c /home/abror/C++_codes/musicplayer/src/playlist.cpp",
+  "file": "/home/abror/C++_codes/musicplayer/src/playlist.cpp",
+  "output": "CMakeFiles/amp.dir/src/playlist.cpp.o"
+}
+]
