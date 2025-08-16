@@ -1,3 +1,0 @@
-/home/abror/C++_codes/musicplayer/build/CMakeFiles/amp.dir
-/home/abror/C++_codes/musicplayer/build/CMakeFiles/edit_cache.dir
-/home/abror/C++_codes/musicplayer/build/CMakeFiles/rebuild_cache.dir

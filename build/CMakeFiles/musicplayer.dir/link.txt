@@ -1,1 +1,0 @@
-/usr/bin/c++ -Wl,--dependency-file=CMakeFiles/musicplayer.dir/link.d CMakeFiles/musicplayer.dir/src/filepath.cpp.o CMakeFiles/musicplayer.dir/src/main.cpp.o CMakeFiles/musicplayer.dir/src/playlist.cpp.o -o musicplayer  /usr/lib/libSDL2main.a /usr/lib/libSDL2-2.0.so.0.3200.56 /usr/lib/libSDL2_mixer.so /usr/lib/libtag.so.2.1.1

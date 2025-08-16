@@ -1,4 +1,5 @@
 ./build.sh
+./.cache
 ./compile_commands.json
 ./assets/
 ./build 
