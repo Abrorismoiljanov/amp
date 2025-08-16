@@ -2,6 +2,7 @@
 #include <SDL_events.h>
 #include <SDL_keycode.h>
 #include <cstddef>
+#include <cstdlib>
 #include <iostream>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_mixer.h>
@@ -19,6 +20,12 @@
 void clearScreen() {
     std::cout << "\033[2J\033[1;1H"; // ANSI escape code, faster than system("clear")
 }
+
+enum Playlistmode{
+    Normal,
+    Loop,
+    Random
+};
 
 void cleanupAndExit() {
     std::cout << "\033[?25h";   // show cursor
@@ -65,7 +72,7 @@ int getTerminalRows() {
     return w.ws_row;
 }
 
-void renderUI(const std::string &trackName, int volume, int elapsed, int total, bool ispaused, const TrackMeta &meta) {
+void renderUI(const std::string &trackName, int volume, int elapsed, int total, bool ispaused, const TrackMeta &meta, Playlistmode mode, std::vector<std::filesystem::path> playlist, size_t index) {
     clearScreen();
 
     int rows = getTerminalRows();
@@ -78,9 +85,9 @@ void renderUI(const std::string &trackName, int volume, int elapsed, int total, 
     int volumePercent = (volume * 100) / 128;
     int volumePercentbar = (volume * 10) / 128;
 
-    std::cout << "Now Playing: " << trackName << "\n\n";
+    std::cout << "\n\n" << " Now Playing: " << trackName << "\n\n";
 
-    std::cout << meta.title << "\n\n"<< " " << meta.artist << "\n\n" << " [" << meta.album << "]\n\n";
+    std::cout << " " << meta.title << "\n\n"<< " " << meta.artist << "\n\n" << " [" << meta.album << "]\n\n";
  
     const int barWidth = 100;
     int pos = (elapsed * barWidth) / total;
@@ -92,6 +99,17 @@ void renderUI(const std::string &trackName, int volume, int elapsed, int total, 
         std::cout << "  ";
     }
     std::cout << "] ";
+ 
+    std::cout << " ["; 
+    if (mode == Playlistmode::Normal) {
+        std::cout << " 󰑖 ";
+    }else if (mode ==  Playlistmode::Loop) {
+        std::cout << " 󰑘 ";
+    }else if(mode == Playlistmode::Random) {
+        std::cout << "  ";
+    }
+    std::cout << "] ";
+
     std::cout << std::setw(2) << std::setfill('0') << minutesElapsed << ":" << std::setw(2) << secondsElapsed;
     std::cout << " [";
     for (int i = 0; i < barWidth; ++i) {
@@ -110,7 +128,20 @@ void renderUI(const std::string &trackName, int volume, int elapsed, int total, 
     std::cout << "] ";
     std::cout << "Volume: " << volumePercent << " / 100\n\n";
     
+    
+    auto safeAccess = [&](size_t i) -> std::string {
+        return (i < playlist.size()) ? playlist[i].filename().string() : "";
+    };
 
+
+    std::cout << " " << safeAccess(index - 3) << "\n";
+    std::cout << " " << safeAccess(index - 2) << "\n";
+    std::cout << " " << safeAccess(index - 1) << "\n";
+    std::cout << "\033[47m \033[30m" << "  [" << safeAccess(index) << "] \033[0m \n";
+    std::cout << " " << safeAccess(index + 1) << "\n";
+    std::cout << " " << safeAccess(index + 2) << "\n";
+    std::cout << " " << safeAccess(index + 3) << "\n";
+ 
     std::cout << "\033[" << rows <<";1H";
     std::cout << "[SPACE] Play/Pause [j] decrease volume [k] increase volume [n] back 10s [m] skip 10s [l] Next [h] Previous [q] Quit\n";
     std::cout << "\033[" << rows << ";1H\033[K";
@@ -157,6 +188,7 @@ int main (int argc, char *argv[]) {
     }
 
     size_t index = startIndex;
+    Playlistmode mode = Playlistmode::Normal;
 
     while (true) {
     
@@ -171,7 +203,7 @@ int main (int argc, char *argv[]) {
         double currentPos = 0;
         float SkipOffset = 0;
 
-        const int frameDelay = 50; // target 50ms per frame ~20 FPS
+        const int frameDelay = 20; // target 50ms per frame ~20 FPS
         Uint32 lastFrameTime = SDL_GetTicks();
 
         while (Mix_PlayingMusic()) {
@@ -195,6 +227,16 @@ int main (int argc, char *argv[]) {
                 index = (index + 1) % playlist.size();
                 goto nt;
             };
+            if (key == 'r') {
+                if (mode == Playlistmode::Normal) {
+                    mode = Playlistmode::Loop;
+                }else if (mode == Playlistmode::Loop) {
+                    mode = Playlistmode::Random;
+                }else if (Playlistmode::Random) {
+                    mode = Playlistmode::Normal;
+                }
+            };
+
             if (key == ' ') {
                 if(isPaused){
                     Mix_ResumeMusic();
@@ -233,7 +275,7 @@ int main (int argc, char *argv[]) {
             }
 
             elapsed = static_cast<int>(currentPos);
-            renderUI(playlist[index].filename().string(), volume, elapsed, total, isPaused, getMetadata(playlist[index]));
+            renderUI(playlist[index].filename().string(), volume, elapsed, total, isPaused, getMetadata(playlist[index]), mode, playlist, index);
             
             if (elapsedSinceLastFrame < frameDelay) {
                 SDL_Delay(frameDelay - elapsedSinceLastFrame);
@@ -244,7 +286,13 @@ int main (int argc, char *argv[]) {
         }
         clearScreen();
     
-        index = (index + 1) % playlist.size();
+        if (mode  == Playlistmode::Normal) {
+            index = (index + 1) % playlist.size();
+        }else if (mode  == Playlistmode::Loop) {
+            index = (index) % playlist.size();
+        }else if (mode == Playlistmode::Random) {
+            index = rand() % playlist.size();
+        }
         nt:
             Mix_FreeMusic(music);
 
