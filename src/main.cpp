@@ -13,7 +13,6 @@
 #include <taglib/tag.h>
 #include <taglib/audioproperties.h>
 #include <sys/ioctl.h>
-
 #include "playlist.h"
 #include "filepath.h"
 
