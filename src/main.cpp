@@ -143,7 +143,7 @@ void renderUI(const std::string &trackName, int volume, int elapsed, int total, 
     std::cout << " " << safeAccess(index + 3) << "\n";
  
     std::cout << "\033[" << rows <<";1H";
-    std::cout << "[SPACE] Play/Pause [j] decrease volume [k] increase volume [n] back 10s [m] skip 10s [l] Next [h] Previous [q] Quit\n";
+    std::cout << "[SPACE] Play/Pause [j] [r] Normal/Loop/Random mode decrease volume [k] increase volume [n] back 10s [m] skip 10s [l] Next [h] Previous [q] Quit\n";
     std::cout << "\033[" << rows << ";1H\033[K";
 }
 
