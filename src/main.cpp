@@ -143,7 +143,7 @@ void renderUI(const std::string &trackName, int volume, int elapsed, int total, 
     std::cout << " " << safeAccess(index + 3) << "\n";
  
     std::cout << "\033[" << rows <<";1H";
-    std::cout << "[SPACE] Play/Pause [j] [r] Normal/Loop/Random mode decrease volume [k] increase volume [n] back 10s [m] skip 10s [l] Next [h] Previous [q] Quit\n";
+    std::cout << "[SPACE] Play/Pause [r] Normal/Loop/Random mode [j] decrease volume [k] increase volume [n] back 10s [m] skip 10s [l] Next [h] Previous [q] Quit\n";
     std::cout << "\033[" << rows << ";1H\033[K";
 }
 
@@ -265,9 +265,10 @@ int main (int argc, char *argv[]) {
             Mix_SetMusicPosition(currentPos + 5);
             }
             if (key == 'n') { // skip backward 5 seconds
-            SkipOffset -= 5;
-            if (SkipOffset < 0) SkipOffset = 0;
-            Mix_SetMusicPosition(currentPos - 5);
+                double newPos = currentPos - 5;
+                if (newPos < 0) newPos = 0;
+                SkipOffset = newPos - (SDL_GetTicks() - startTime - totalPaused)/1000.0;
+                Mix_SetMusicPosition(newPos);
             }
 
             if (!isPaused) {
