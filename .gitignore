@@ -1,6 +1,0 @@
-./build.sh
-./gitignore
-./.cache
-./compile_commands.json
-./assets/
-./build 
